@@ -4,23 +4,31 @@ from bs4 import BeautifulSoup
 from urllib import request, parse
 
 
-def get_feed(feed):
-    req = request.Request(str(feed))
+def parse_rss(feed):
+    headers = {"user-agent": "argos-feed", "accept": "*/*"}
+    req = request.Request(str(feed), headers=headers)
     res = request.urlopen(req).read()
     soup = BeautifulSoup(res, "xml")
-    entries = soup.find_all("item")
+    channels = soup.find_all("channel")
+    if len(channels) < 1:
+        return list()
+    channel = channels[0]
+    items = channel.find_all("item")
     to_return = list()
-    for entry in entries:
+    for item in items:
         content = Content()
-        content.title = entry.title.text
-        content.link = entry.link.text
+        content.title = item.title.text
+        content.link = item.link.text
         to_return.append(content)
     return to_return
 
 
 def download():
-    feed_urls = ["https://feeds.feedblitz.com/marginalrevolution"]
-    feeds = [get_feed(feed_url) for feed_url in feed_urls]
+    feed_urls = [
+        "https://feeds.feedblitz.com/marginalrevolution",
+        "https://astralcodexten.substack.com/feed",
+    ]
+    feeds = [parse_rss(feed_url) for feed_url in feed_urls]
     return feeds
 
 
