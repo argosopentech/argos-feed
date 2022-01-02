@@ -1,0 +1,8 @@
+<h1>Argos Feed</h1>
+<p>
+  <ul>
+    {% for content in content_list %}
+    <li><a href="{{content.link}}">{{content.title}}</a></li>
+    {% endfor %}
+  <ul>
+</p>

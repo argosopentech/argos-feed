@@ -2,6 +2,7 @@ from content import *
 
 from bs4 import BeautifulSoup
 from urllib import request, parse
+import random
 
 
 def parse_rss(feed):
@@ -32,7 +33,12 @@ def download():
     return feeds
 
 
-feeds = download()
-for feed in feeds:
+content_list = list()
+for feed in download():
     for content in feed:
-        print(content)
+        content_list.append(content)
+
+random.shuffle(content_list)
+
+for content in content_list:
+    print(content)
